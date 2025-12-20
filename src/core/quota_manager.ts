@@ -163,12 +163,17 @@ export class QuotaManager {
 			duration = `${hours}h ${mins % 60}m`;
 		}
 
-		const day = reset_time.getDate().toString().padStart(2, '0');
-		const month = (reset_time.getMonth() + 1).toString().padStart(2, '0');
-		const year = reset_time.getFullYear();
-		const hh = reset_time.getHours().toString().padStart(2, '0');
-		const mm = reset_time.getMinutes().toString().padStart(2, '0');
+		const date_str = reset_time.toLocaleDateString(undefined, {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+		});
+		const time_str = reset_time.toLocaleTimeString(undefined, {
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false,
+		});
 
-		return `${duration} (${day}/${month}/${year} ${hh}:${mm})`;
+		return `${duration} (${date_str} ${time_str})`;
 	}
 }

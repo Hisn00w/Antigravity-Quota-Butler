@@ -2,7 +2,7 @@
 
 ## 1.1.0 (2025-12-20)
 
-- Add absolute date and time to quota reset information (DD/MM/YYYY HH:mm)
+- Add absolute date and time to quota reset information (locale-aware)
 - Add notice/mention of the source project
 - Fix macOS port detection logic by using AND semantics in `lsof`
 - Improve port validation to prevent false positives from unrelated local services
