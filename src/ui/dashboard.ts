@@ -435,10 +435,6 @@ export class DashboardManager {
         input:checked + .slider { background-color: var(--vscode-textLink-foreground); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        .language-card {
-            background: linear-gradient(135deg, var(--card-bg), var(--vscode-editor-background));
-            border: 1px solid var(--vscode-textLink-foreground);
-        }
         .language-selector {
             margin: 10px 0;
         }
@@ -546,10 +542,10 @@ export class DashboardManager {
                         <div class="description">${i18n.autoSwitchDesc}</div>
                     </div>
                 </div>
-                <div class="setting-card-inner language-card">
+                <div class="setting-card-inner">
                     <div class="setting-item">
                         <div class="setting-label">
-                            <span>🌐 ${i18n.languageLabel}</span>
+                            <span>${i18n.languageLabel}</span>
                         </div>
                         <div class="language-selector">
                             <select id="language-select">
