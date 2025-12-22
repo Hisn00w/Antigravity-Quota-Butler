@@ -20,6 +20,7 @@ export class ConfigManager {
 			warning_threshold: config.get<number>('warningThreshold', 20),
 			enable_notifications: config.get<boolean>('enableNotifications', true),
 			auto_switch_models: config.get<boolean>('autoSwitchModels', false),
+			language: config.get<string>('language', 'auto') || 'auto',
 		};
 	}
 

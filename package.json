@@ -1,8 +1,8 @@
 {
   "name": "antigravity-quota-butler",
-  "displayName": "AG 额度管家 (AG Quota Butler)",
-  "description": "实时监控 Antigravity AI 模型使用额度，集成状态栏、消耗趋势图表及智能平替建议。",
-  "version": "1.3.1",
+  "displayName": "%ext.displayName%",
+  "description": "%ext.description%",
+  "version": "1.3.2",
   "publisher": "hisn00w",
   "icon": "assets/AntiGravityQuota.png",
   "engines": {
@@ -19,35 +19,35 @@
     "commands": [
       {
         "command": "ag-quota.refresh",
-        "title": "AGQ: 立即刷新"
+        "title": "%cmd.refresh%"
       },
       {
         "command": "ag-quota.reconnect",
-        "title": "AGQ: 重新连接"
+        "title": "%cmd.reconnect%"
       },
       {
         "command": "ag-quota.show_logs",
-        "title": "AGQ: 显示调试日志"
+        "title": "%cmd.logs%"
       },
       {
         "command": "ag-quota.show_dashboard",
-        "title": "AGQ: 额度仪表盘"
+        "title": "%cmd.dashboard%"
       }
     ],
     "configuration": {
-      "title": "AGQ",
+      "title": "%config.title%",
       "properties": {
         "ag-quota.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "启用自动监控",
+          "description": "%config.enabled%",
           "order": 1
         },
         "ag-quota.pollingInterval": {
           "type": "number",
           "default": 120,
           "minimum": 30,
-          "description": "轮询间隔（秒）（最小：30秒，推荐：120秒+）",
+          "description": "%config.polling%",
           "order": 2
         },
         "ag-quota.pinnedModels": {
@@ -56,13 +56,13 @@
           "items": {
             "type": "string"
           },
-          "description": "要在状态栏中显示的模型 ID。如果为空，则显示 'AGQ'。",
+          "description": "%config.pinned%",
           "order": 3
         },
         "ag-quota.showPromptCredits": {
           "type": "boolean",
           "default": false,
-          "description": "在状态栏中显示提示词点数。",
+          "description": "%config.credits%",
           "order": 4
         },
         "ag-quota.warningThreshold": {
@@ -70,20 +70,42 @@
           "default": 20,
           "minimum": 0,
           "maximum": 100,
-          "description": "额度报警阈值（百分比）。当剩余额度低于此值时将触发告警。",
+          "description": "%config.threshold%",
           "order": 5
         },
         "ag-quota.enableNotifications": {
           "type": "boolean",
           "default": true,
-          "description": "当额度低于阈值时发送桌面通知提醒。",
+          "description": "%config.notify%",
           "order": 6
         },
         "ag-quota.autoSwitchModels": {
           "type": "boolean",
           "default": false,
-          "description": "当额度较低时，是否允许插件协助建议切换模型。",
+          "description": "%config.autoSwitch%",
           "order": 7
+        },
+        "ag-quota.language": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "zh-cn",
+            "en",
+            "ja",
+            "fr",
+            "de"
+          ],
+          "enumDescriptions": [
+            "Auto (Follow IDE)",
+            "简体中文",
+            "English",
+            "日本語",
+            "Français",
+            "Deutsch"
+          ],
+          "description": "%config.language%",
+          "order": 8
         }
       }
     }

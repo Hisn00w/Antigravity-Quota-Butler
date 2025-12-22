@@ -1,0 +1,17 @@
+{
+    "ext.displayName": "AG Quota Butler",
+    "ext.description": "Real-time monitoring of Antigravity AI model usage credits, featuring a status bar summary, trend charts, and smart model suggestion.",
+    "cmd.refresh": "AGQ: Refresh Now",
+    "cmd.reconnect": "AGQ: Reconnect Process",
+    "cmd.logs": "AGQ: Show Debug Logs",
+    "cmd.dashboard": "AGQ: Quota Dashboard",
+    "config.title": "AGQ",
+    "config.enabled": "Enable automatic monitoring",
+    "config.polling": "Polling interval (seconds) (Min: 30s, Recommended: 120s+)",
+    "config.pinned": "Model IDs to display in the status bar. If empty, defaults to 'AGQ'.",
+    "config.credits": "Show prompt credits in the status bar.",
+    "config.threshold": "Warning threshold (percentage). Triggers an alert when remaining quota falls below this value.",
+    "config.notify": "Send desktop notifications when quota is below the threshold.",
+    "config.autoSwitch": "Automatically suggest or find the best substitute model when quota is low.",
+    "config.language": "Dashboard and notification language. Select 'auto' to follow IDE language."
+}

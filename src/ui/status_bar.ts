@@ -66,17 +66,18 @@ export class StatusBarManager {
 		const pinned = this.get_pinned_models();
 		const parts: string[] = [];
 
-		// Filter models to only show pinned ones
-		const pinned_models = snapshot.models.filter(m => pinned.includes(m.model_id));
+		// 1. Identify models to show
+		const models_to_show = snapshot.models.filter(m => pinned.includes(m.model_id));
 
-		if (pinned_models.length === 0) {
+		if (models_to_show.length === 0) {
 			// Show default text if nothing is pinned
 			this.item.text = '$(rocket) AGQ';
 		} else {
-			for (const m of pinned_models) {
+			for (const m of models_to_show) {
 				const pct = m.remaining_percentage !== undefined ? `${m.remaining_percentage.toFixed(0)}%` : 'N/A';
 				const status_icon = m.is_exhausted ? '$(error)' : m.remaining_percentage !== undefined && m.remaining_percentage < 20 ? '$(warning)' : '$(check)';
 				const abbrev = get_abbreviation(m.label);
+
 				parts.push(`${status_icon} ${abbrev}: ${pct}`);
 			}
 
@@ -120,8 +121,11 @@ export class StatusBarManager {
 				pick.items = this.build_menu_items();
 				// Update status bar immediately if we have a snapshot
 				if (this.last_snapshot) {
-					const config = vscode.workspace.getConfiguration('agq');
-					this.update(this.last_snapshot, !!config.get('showPromptCredits'));
+					const config = vscode.workspace.getConfiguration('ag-quota');
+					this.update(
+						this.last_snapshot,
+						!!config.get('showPromptCredits')
+					);
 				}
 			}
 		});

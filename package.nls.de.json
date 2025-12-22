@@ -1,0 +1,17 @@
+{
+    "ext.displayName": "AG Quota Butler",
+    "ext.description": "Echtzeit-Überwachung der Nutzung von Antigravity AI-Modellguthaben mit einer Zusammenfassung in der Statusleiste, Trenddiagrammen und intelligenten Modellvorschlägen.",
+    "cmd.refresh": "AGQ: Jetzt aktualisieren",
+    "cmd.reconnect": "AGQ: Prozess neu verbinden",
+    "cmd.logs": "AGQ: Debug-Protokolle anzeigen",
+    "cmd.dashboard": "AGQ: Quoten-Dashboard",
+    "config.title": "AGQ",
+    "config.enabled": "Automatische Überwachung aktivieren",
+    "config.polling": "Abfrageintervall (Sekunden) (Min: 30s, Empfohlen: 120s+)",
+    "config.pinned": "Modell-IDs zur Anzeige in der Statusleiste. Wenn leer, wird standardmäßig 'AGQ' angezeigt.",
+    "config.credits": "Prompt-Guthaben in der Statusleiste anzeigen.",
+    "config.threshold": "Warnschwelle (Prozent). Löst einen Alarm aus, wenn das verbleibende Kontingent unter diesen Wert fällt.",
+    "config.notify": "Desktop-Benachrichtigungen senden, wenn das Kontingent unter dem Schwellenwert liegt.",
+    "config.autoSwitch": "Automatisch das beste Ersatzmodell vorschlagen oder finden, wenn das Kontingent niedrig ist.",
+    "config.language": "Sprache für Dashboard und Benachrichtigungen. Wählen Sie 'auto', um der IDE-Sprache zu folgen."
+}

@@ -5,6 +5,7 @@
 import * as https from 'https';
 import * as vscode from 'vscode';
 import { quota_snapshot, model_quota_info, prompt_credits_info, server_user_status_response } from '../utils/types';
+import { logger } from '../utils/logger';
 
 export class QuotaManager {
 	private port: number = 0;
@@ -143,6 +144,7 @@ export class QuotaManager {
 				return {
 					label: m.label,
 					model_id: m.modelOrAlias?.model || 'unknown',
+					alias: m.modelOrAlias?.alias,
 					remaining_fraction: m.quotaInfo.remainingFraction,
 					remaining_percentage: m.quotaInfo.remainingFraction !== undefined ? m.quotaInfo.remainingFraction * 100 : undefined,
 					is_exhausted: m.quotaInfo.remainingFraction === 0,
@@ -152,10 +154,16 @@ export class QuotaManager {
 				};
 			});
 
+		const active_model_id = user_status.activeModelId || user_status.cascadeModelConfigData?.activeModelId;
+
+		logger.debug('QuotaManager', `Active model ID: ${active_model_id}`);
+		logger.debug('QuotaManager', `Models: ${models.map(m => `${m.label}(${m.model_id}/${m.alias})`).join(', ')}`);
+
 		return {
 			timestamp: new Date(),
 			prompt_credits,
 			models,
+			active_model_id,
 		};
 	}
 

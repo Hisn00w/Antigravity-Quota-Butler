@@ -9,7 +9,8 @@ import { QuotaManager } from './core/quota_manager';
 import { StatusBarManager } from './ui/status_bar';
 import { HistoryManager } from './core/history_manager';
 import { DashboardManager } from './ui/dashboard';
-import { quota_snapshot } from './utils/types';
+import { getTranslation } from './utils/i18n';
+import { quota_snapshot, model_quota_info } from './utils/types';
 import { logger } from './utils/logger';
 
 let config_manager: ConfigManager;
@@ -119,15 +120,16 @@ export async function activate(context: vscode.ExtensionContext) {
 				if (pct < current_config.warning_threshold) {
 					if (!warned_models.has(m.model_id)) {
 						const alternative = suggest_alternative_model(snapshot, m.model_id);
-						const msg = `额度报警: 模型 ${m.label} 剩余额度仅剩 ${pct.toFixed(1)}%！`;
-						const action = alternative ? `尝试使用 ${alternative.label}` : undefined;
+						const lang = current_config.language === 'auto' ? vscode.env.language : current_config.language;
+
+						const msg = getTranslation(lang, 'quotaWarning', m.label, pct.toFixed(1));
 
 						if (alternative) {
 							const alt_label = alternative.label;
-							const action = `尝试使用 ${alt_label}`;
+							const action = getTranslation(lang, 'tryAlternative', alt_label);
 							vscode.window.showWarningMessage(msg, action).then(selected => {
 								if (selected === action) {
-									vscode.window.showInformationMessage(`请在 Antigravity 模型选择菜单中手动切换至 ${alt_label}`);
+									vscode.window.showInformationMessage(getTranslation(lang, 'switchManually', alt_label));
 								}
 							});
 						} else {
@@ -151,7 +153,10 @@ export async function activate(context: vscode.ExtensionContext) {
 			prompt_credits: snapshot.prompt_credits,
 			timestamp: snapshot.timestamp,
 		});
-		status_bar.update(snapshot, current_config.show_prompt_credits ?? false);
+		status_bar.update(
+			snapshot,
+			current_config.show_prompt_credits ?? false
+		);
 	});
 
 	quota_manager.on_error(err => {

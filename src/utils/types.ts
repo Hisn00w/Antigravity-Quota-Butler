@@ -26,6 +26,7 @@ export interface prompt_credits_info {
 export interface model_quota_info {
 	label: string;
 	model_id: string;
+	alias?: string;
 	remaining_fraction?: number;
 	remaining_percentage?: number;
 	is_exhausted: boolean;
@@ -38,6 +39,7 @@ export interface quota_snapshot {
 	timestamp: Date;
 	prompt_credits?: prompt_credits_info;
 	models: model_quota_info[];
+	active_model_id?: string;
 }
 
 export interface usage_history_entry {
@@ -66,6 +68,7 @@ export interface config_options {
 	warning_threshold: number;
 	enable_notifications: boolean;
 	auto_switch_models: boolean;
+	language: string;
 }
 
 // Server Response Types (Must match external API, usually camelCase or snake_case depending on proto to JSON mapping)
@@ -86,6 +89,8 @@ export interface server_user_status_response {
 		};
 		cascadeModelConfigData?: {
 			clientModelConfigs: any[]; // will map to model_config manually
+			activeModelId?: string;
 		};
+		activeModelId?: string;
 	};
 }

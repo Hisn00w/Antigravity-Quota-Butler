@@ -2,21 +2,121 @@ import * as vscode from 'vscode';
 import { HistoryManager } from '../core/history_manager';
 import { quota_snapshot } from '../utils/types';
 
+const DASHBOARD_I18N: Record<string, any> = {
+    'zh-cn': {
+        title: '额度仪表盘',
+        syncTime: '同步时间',
+        currentStatus: '当前状态',
+        usageTrend: '消耗趋势',
+        preferences: '偏好设置',
+        thresholdLabel: '额度报警阈值',
+        thresholdDesc: '当模型剩余百分比低于此值时发送警告。',
+        autoSwitchLabel: '智能平替建议',
+        autoSwitchDesc: '额度不足时自动寻找并建议最佳替代模型。建议与通知功能配合使用。',
+        languageLabel: '界面语言',
+        languageDesc: '选择仪表盘和通知的显示语言。',
+        saveIndicator: '所有更改将实时保存至您的扩展配置',
+        noData: '正在积攒数据点...',
+        ready: '就绪'
+    },
+    'en': {
+        title: 'Quota Dashboard',
+        syncTime: 'Sync Time',
+        currentStatus: 'Current Status',
+        usageTrend: 'Usage Trend',
+        preferences: 'Preferences',
+        thresholdLabel: 'Warning Threshold',
+        thresholdDesc: 'Send an alert when the remaining percentage falls below this value.',
+        autoSwitchLabel: 'Smart Model Suggestion',
+        autoSwitchDesc: 'Automatically suggest alternatives when quota is low.',
+        languageLabel: 'Language',
+        languageDesc: 'Select the language for the dashboard and notifications.',
+        saveIndicator: 'Changes are saved in real-time to your extension config.',
+        noData: 'Accumulating data points...',
+        ready: 'Ready'
+    },
+    'ja': {
+        title: 'クォータダッシュボード',
+        syncTime: '同期時間',
+        currentStatus: '現在のステータス',
+        usageTrend: '使用傾向',
+        preferences: '設定',
+        thresholdLabel: '警告しきい値',
+        thresholdDesc: '残りの割合がこの値を下回ったときにアラートを送信します。',
+        autoSwitchLabel: 'スマートモデル提案',
+        autoSwitchDesc: 'クォータが不足しているときに代替案を自動的に提案します。',
+        languageLabel: '言語',
+        languageDesc: 'ダッシュボードと通知の言語を選択します。',
+        saveIndicator: '変更はリアルタイムで拡張機能の構成に保存されます。',
+        noData: 'データポイントを蓄積中...',
+        ready: '準備完了'
+    },
+    'fr': {
+        title: 'Tableau de bord des quotas',
+        syncTime: 'Heure de synchronisation',
+        currentStatus: 'Statut actuel',
+        usageTrend: 'Tendance d\'utilisation',
+        preferences: 'Préférences',
+        thresholdLabel: 'Seuil d\'avertissement',
+        thresholdDesc: 'Envoyer une alerte lorsque le pourcentage restant tombe en dessous de cette valeur.',
+        autoSwitchLabel: 'Suggestion de modèle intelligent',
+        autoSwitchDesc: 'Suggérer automatiquement des alternatives lorsque le quota est faible.',
+        languageLabel: 'Langue',
+        languageDesc: 'Sélectionnez la langue du tableau de bord et des notifications.',
+        saveIndicator: 'Les modifications sont enregistrées en temps réel.',
+        noData: 'Accumulation de points de données...',
+        ready: 'Prêt'
+    },
+    'de': {
+        title: 'Quoten-Dashboard',
+        syncTime: 'Synchronisierungszeit',
+        currentStatus: 'Aktueller Status',
+        usageTrend: 'Nutzungstrend',
+        preferences: 'Einstellungen',
+        thresholdLabel: 'Warnschwelle',
+        thresholdDesc: 'Alarm senden, wenn der verbleibende Prozentsatz unter diesen Wert fällt.',
+        autoSwitchLabel: 'Intelligente Modellvorschläge',
+        autoSwitchDesc: 'Automatisch Alternativen vorschlagen, wenn das Kontingent niedrig ist.',
+        languageLabel: 'Sprache',
+        languageDesc: 'Wählen Sie die Sprache für das Dashboard und die Benachrichtigungen aus.',
+        saveIndicator: 'Änderungen werden in Echtzeit in Ihrer Konfiguration gespeichert.',
+        noData: 'Datenpunkte werden gesammelt...',
+        ready: 'Bereit'
+    }
+};
+
 export class DashboardManager {
     private panel: vscode.WebviewPanel | undefined;
 
     constructor(private history: HistoryManager) { }
 
+    private get_translation(lang: string) {
+        if (lang === 'auto') {
+            lang = vscode.env.language.toLowerCase();
+        }
+        if (lang.startsWith('zh')) lang = 'zh-cn';
+        if (lang.startsWith('ja')) lang = 'ja';
+        if (lang.startsWith('fr')) lang = 'fr';
+        if (lang.startsWith('de')) lang = 'de';
+
+        return DASHBOARD_I18N[lang] || DASHBOARD_I18N['en'];
+    }
+
     open(snapshot: quota_snapshot) {
+        const config = vscode.workspace.getConfiguration('ag-quota');
+        const lang = config.get<string>('language', 'auto');
+        const i18n = this.get_translation(lang);
+
         if (this.panel) {
             this.panel.reveal(vscode.ViewColumn.One);
+            this.panel.title = i18n.title;
             this.update(snapshot);
             return;
         }
 
         this.panel = vscode.window.createWebviewPanel(
             'agqDashboard',
-            'AG 额度管家 - 仪表盘',
+            i18n.title,
             vscode.ViewColumn.One,
             {
                 enableScripts: true,
@@ -30,7 +130,13 @@ export class DashboardManager {
             if (message.type === 'updateSetting') {
                 const config = vscode.workspace.getConfiguration('ag-quota');
                 await config.update(message.key, message.value, vscode.ConfigurationTarget.Global);
-                vscode.window.showInformationMessage(`设置已更新: ${message.key} = ${message.value}`);
+
+                // If language changed, we need to refresh the whole HTML to update static labels
+                if (message.key === 'language' && this.panel) {
+                    this.panel.webview.html = this.get_html(snapshot);
+                    const newI18n = this.get_translation(message.value);
+                    this.panel.title = newI18n.title;
+                }
             }
         });
 
@@ -42,14 +148,18 @@ export class DashboardManager {
     update(snapshot: quota_snapshot) {
         if (this.panel) {
             const config = vscode.workspace.getConfiguration('ag-quota');
+            const lang = config.get<string>('language', 'auto');
             this.panel.webview.postMessage({
                 type: 'update',
                 snapshot,
                 history: this.history.get_history(),
                 config: {
                     warningThreshold: config.get('warningThreshold'),
-                    autoSwitchModels: config.get('autoSwitchModels')
-                }
+                    autoSwitchModels: config.get('autoSwitchModels'),
+                    followActiveModel: config.get('followActiveModel'),
+                    language: lang
+                },
+                i18n: this.get_translation(lang)
             });
         }
     }
@@ -59,14 +169,17 @@ export class DashboardManager {
         const config = vscode.workspace.getConfiguration('ag-quota');
         const currentThreshold = config.get('warningThreshold', 20);
         const autoSwitch = config.get('autoSwitchModels', false);
+        const langPreference = config.get<string>('language', 'auto') || 'auto';
+
+        const i18n = this.get_translation(langPreference);
 
         return `
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="${langPreference === 'auto' ? 'en' : langPreference}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGQ Dashboard</title>
+    <title>${i18n.title}</title>
     <style>
         :root {
             --card-bg: var(--vscode-notifications-background);
@@ -322,6 +435,38 @@ export class DashboardManager {
         input:checked + .slider { background-color: var(--vscode-textLink-foreground); }
         input:checked + .slider:before { transform: translateX(20px); }
 
+        .language-card {
+            background: linear-gradient(135deg, var(--card-bg), var(--vscode-editor-background));
+            border: 1px solid var(--vscode-textLink-foreground);
+        }
+        .language-selector {
+            margin: 10px 0;
+        }
+        .language-selector select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--vscode-dropdown-background);
+            color: var(--vscode-dropdown-foreground);
+            border: 2px solid var(--vscode-dropdown-border);
+            border-radius: 8px;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            transition: all 0.2s ease;
+        }
+        .language-selector select:hover {
+            border-color: var(--vscode-focusBorder);
+        }
+        .language-selector select:focus {
+            outline: none;
+            border-color: var(--vscode-textLink-foreground);
+            box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.15);
+        }
+
         .save-indicator {
             text-align: center;
             font-size: 11px;
@@ -334,14 +479,14 @@ export class DashboardManager {
 <body>
     <div class="container">
         <div class="header">
-            <h1>AG 额度管家</h1>
+            <h1>${i18n.title}</h1>
             <div id="last-update" style="font-size: 11px; opacity: 0.7; font-weight: 500;">
-                同步时间: ${new Date().toLocaleTimeString()}
+                ${i18n.syncTime}: ${new Date().toLocaleTimeString()}
             </div>
         </div>
 
         <div class="section-title">
-            <span>📊 当前状态</span>
+            <span>📊 ${i18n.currentStatus}</span>
         </div>
         <div class="card-grid" id="models-grid">
             ${snapshot.models.map(m => `
@@ -359,7 +504,7 @@ export class DashboardManager {
 
         <div class="history-section">
             <div class="section-title">
-                <span>📈 消耗趋势</span>
+                <span>📈 ${i18n.usageTrend}</span>
             </div>
             <div class="chart-container">
                 <svg id="history-chart" class="chart-svg" viewBox="0 0 800 250" preserveAspectRatio="none">
@@ -376,33 +521,51 @@ export class DashboardManager {
 
         <div class="settings-section">
             <div class="section-title">
-                <span>⚙️ 偏好设置</span>
+                <span>⚙️ ${i18n.preferences}</span>
             </div>
             <div class="settings-grid">
                 <div class="setting-card-inner">
                     <div class="setting-item">
                         <div class="setting-label">
-                            <span>额度报警阈值</span>
+                            <span>${i18n.thresholdLabel}</span>
                             <span class="threshold-badge" id="threshold-display">${currentThreshold}%</span>
                         </div>
                         <input type="range" id="threshold-range" min="0" max="100" value="${currentThreshold}">
-                        <div class="description">当模型剩余百分比低于此值时发送警告。</div>
+                        <div class="description">${i18n.thresholdDesc}</div>
                     </div>
                 </div>
                 <div class="setting-card-inner">
                     <div class="setting-item">
                         <div class="setting-label">
-                            <span>智能平替建议</span>
+                            <span>${i18n.autoSwitchLabel}</span>
                             <label class="switch">
                                 <input type="checkbox" id="autoswitch-check" ${autoSwitch ? 'checked' : ''}>
                                 <span class="slider"></span>
                             </label>
                         </div>
-                        <div class="description">额度不足时自动寻找并建议最佳替代模型。建议与通知功能配合使用。</div>
+                        <div class="description">${i18n.autoSwitchDesc}</div>
+                    </div>
+                </div>
+                <div class="setting-card-inner language-card">
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <span>🌐 ${i18n.languageLabel}</span>
+                        </div>
+                        <div class="language-selector">
+                            <select id="language-select">
+                                <option value="auto" ${langPreference === 'auto' ? 'selected' : ''}>🔄 Auto (Follow IDE)</option>
+                                <option value="en" ${langPreference === 'en' ? 'selected' : ''}>🇺🇸 English</option>
+                                <option value="zh-cn" ${langPreference === 'zh-cn' ? 'selected' : ''}>🇨🇳 简体中文</option>
+                                <option value="ja" ${langPreference === 'ja' ? 'selected' : ''}>🇯🇵 日本語</option>
+                                <option value="fr" ${langPreference === 'fr' ? 'selected' : ''}>🇫🇷 Français</option>
+                                <option value="de" ${langPreference === 'de' ? 'selected' : ''}>🇩🇪 Deutsch</option>
+                            </select>
+                        </div>
+                        <div class="description">${i18n.languageDesc}</div>
                     </div>
                 </div>
             </div>
-            <div class="save-indicator">所有更改将实时保存至您的扩展配置</div>
+            <div class="save-indicator">${i18n.saveIndicator}</div>
         </div>
     </div>
 
@@ -418,6 +581,7 @@ export class DashboardManager {
         const thresholdRange = document.getElementById('threshold-range');
         const thresholdDisplay = document.getElementById('threshold-display');
         const autoSwitchCheck = document.getElementById('autoswitch-check');
+        const languageSelect = document.getElementById('language-select');
 
         thresholdRange.addEventListener('input', (e) => {
             thresholdDisplay.textContent = e.target.value + '%';
@@ -440,15 +604,25 @@ export class DashboardManager {
             });
         });
 
+        languageSelect.addEventListener('change', (e) => {
+            vscode.postMessage({
+                type: 'updateSetting',
+                key: 'language',
+                value: e.target.value
+            });
+        });
+
         function getColor(pct) {
             if (pct < 20) return '#f14c4c'; 
             if (pct < 50) return '#cca700'; 
             return '#3fb950';
         }
 
-        function updateUI(snapshot, history, config) {
+        function updateUI(snapshot, history, config, newI18n) {
+            if (newI18n) i18n = newI18n;
+            
             // Update time
-            document.getElementById('last-update').textContent = '同步时间: ' + new Date().toLocaleTimeString();
+            document.getElementById('last-update').textContent = i18n.syncTime + ': ' + new Date().toLocaleTimeString();
             
             // Update cards
             snapshot.models.forEach(m => {
@@ -480,7 +654,7 @@ export class DashboardManager {
                 text.setAttribute("text-anchor", "middle");
                 text.setAttribute("fill", "var(--vscode-descriptionForeground)");
                 text.setAttribute("class", "temp-text");
-                text.textContent = "正在积攒数据点... 至少需要 2 个记录点绘制趋势图 (当前: " + data.length + ")";
+                text.textContent = i18n.noData + " (min. 2 pts, current: " + data.length + ")";
                 svg.appendChild(text);
                 return;
             }
@@ -542,7 +716,7 @@ export class DashboardManager {
         window.addEventListener('message', event => {
             const message = event.data;
             if (message.type === 'update') {
-                updateUI(message.snapshot, message.history, message.config);
+                updateUI(message.snapshot, message.history, message.config, message.i18n);
             }
         });
     </script>

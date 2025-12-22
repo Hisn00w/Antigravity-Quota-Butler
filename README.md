@@ -5,7 +5,7 @@
 [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/hisn00w.antigravity-quota-butler?style=flat-square&label=installs&color=brightgreen)](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
 [![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/hisn00w.antigravity-quota-butler?style=flat-square&label=rating)](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
 
-[简体中文](#简体中文) | [English](#english) | [Open VSX](https://open-vsx.org/extension/hisn00w/antigravity-quota-butler) | [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
+[简体中文](#简体中文) | [English](#english) | [日本語](#日本語) | [Français](#français) | [Deutsch](#deutsch) | [Open VSX](https://open-vsx.org/extension/hisn00w/antigravity-quota-butler) | [Marketplace](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
 
 ---
 
@@ -99,22 +99,74 @@
 | `agq.pinnedModels` | `[]` | Model IDs to pin in the status bar |
 | `agq.warningThreshold` | `20` | Warning threshold percentage |
 | `agq.autoSwitchModels` | `false` | Enable/disable smart model suggestions |
+| `agq.language` | `auto` | Language preference (auto/en/zh-cn/ja/fr/de) |
 
 ---
 
-## 安装 / Installation
+## 日本語
 
-### 方式 A：Antigravity IDE 扩展商店 (推荐) / Method A: Antigravity IDE Extension Store (Recommended)
-在 **Antigravity IDE** 的扩展视图中搜索 **`AG 额度管家`** 或 **`AG Quota Butler`** 并点击安装。
-Search for **`AG 额度管家`** or **`AG Quota Butler`** in the **Antigravity IDE** Extensions view and click Install.
+### 特徴
+- **リアルタイム監視**: Antigravityプロセスを自動検出し、バックグラウンドでポーリングを行い、複数のモデルを追跡します。
+- **ステータスバー統合**: ステータスバーのアイコン（$(check), $(warning), $(error)）で、クォータの状態を一目で確認できます。
+- **クォータアラートとスマートな提案**: しきい値を設定可能で、クォータが不足した際に代替モデルを自動的に推奨します。
+- **使用履歴**: クォータの変動をローカルに保存し、最適化されたログを保持します。
+- **ビジュアルダッシュボード**: SVGトレンドチャートと設定機能を集約した美しいWebviewパネル。
 
-> 💡 **提示 / Tip**: Antigravity IDE 默认使用 Open VSX Registry，可以直接搜索安装本插件。
+### コマンド
+| コマンド | 説明 |
+| --- | --- |
+| `AGQ: 今すぐ更新` | 最新のクォータデータを手動で取得します |
+| `AGQ: クォータダッシュボード` | 可視化されたダッシュボードと設定を開きます |
+
+---
+
+## Français
+
+### Caractéristiques
+- **Surveillance en temps réel**: Détection automatique des processus Antigravity, scrutation en arrière-plan et suivi de plusieurs modèles.
+- **Intégration de la barre d'état**: Indicateurs visuels ($(check), $(warning), $(error)) pour un aperçu rapide de l'état des quotas.
+- **Alertes et suggestions intelligentes**: Seuils configurables et recommandations automatiques de modèles de remplacement.
+- **Historique d'utilisation**: Stockage local persistant des variations de quotas.
+- **Tableau de bord visuel**: Superbe panneau Webview avec graphiques de tendance SVG.
+
+### Commandes
+| Commande | Description |
+| --- | --- |
+| `AGQ: Actualiser maintenant` | Récupère manuellement les dernières données de quota |
+| `AGQ: Tableau de bord des quotas` | Ouvre le tableau de bord visualisé et les paramètres |
+
+---
+
+## Deutsch
+
+### Funktionen
+- **Echtzeit-Überwachung**: Automatische Erkennung von Antigravity-Prozessen, Hintergrundabfrage und Verfolgung mehrerer Modelle.
+- **Statusleisten-Integration**: Visuelle Gesundheitsindikatoren ($(check), $(warning), $(error)) auf einen Blick.
+- **Quoten-Warnungen & intelligente Vorschläge**: Konfigurierbare Schwellenwerte und automatische Empfehlungen für Ersatzmodelle.
+- **Nutzungsverlauf**: Persistente lokale Speicherung von Quotenänderungen.
+- **Visuelles Dashboard**: Schönes Webview-Panel mit SVG-Trenddiagrammen und zentralisierten Einstellungen.
+
+### Befehle
+| Befehl | Beschreibung |
+| --- | --- |
+| `AGQ: Jetzt aktualisieren` | Manuelle Abfrage der neuesten Quotendaten |
+| `AGQ: Quoten-Dashboard` | Öffnet das visualisierte Dashboard und die Einstellungen |
+
+---
+
+## 安装 / Installation / インストール / Installation / Installation
+
+### 方式 A：Antigravity IDE (推荐/Recommended)
+- **中文**: 在 **Antigravity IDE** 的扩展视图中搜索 **`AG 额度管家`**。
+- **English**: Search for **`AG Quota Butler`** in the **Antigravity IDE** Extensions view.
+- **日本語**: **Antigravity IDE** の拡張機能ビューで **`AG Quota Butler`** を検索します。
+- **Français**: Recherchez **`AG Quota Butler`** dans la vue Extensions d'**Antigravity IDE**.
+- **Deutsch**: Suchen Sie in der Erweiterungsansicht der **Antigravity IDE** nach **`AG Quota Butler`**.
 
 [View on Open VSX](https://open-vsx.org/extension/hisn00w/antigravity-quota-butler)
 
-### 方式 B：VS Code 市场 / Method B: VS Code Marketplace
-在 VS Code 扩展视图中搜索 **`AG 额度管家`** 或 **`AG Quota Butler`** 并点击安装。
-Search for **`AG 额度管家`** or **`AG Quota Butler`** in the VS Code Extensions view and click Install.
+### 方式 B：VS Code Marketplace
+Search for **`AG Quota Butler`** in the VS Code Extensions view and click Install.
 [View on Marketplace](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
 
 ### 方式 C：手动安装 / Method C: Manual Installation
