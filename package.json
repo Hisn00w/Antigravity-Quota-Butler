@@ -2,8 +2,8 @@
   "name": "antigravity-quota-butler",
   "displayName": "AG 额度管家 (AG Quota Butler)",
   "description": "实时监控 Antigravity AI 模型使用额度，集成状态栏、消耗趋势图表及智能平替建议。",
-  "version": "1.3.0",
-  "publisher": "hisn0w",
+  "version": "1.3.1",
+  "publisher": "hisn00w",
   "icon": "assets/AntiGravityQuota.png",
   "engines": {
     "vscode": "^1.90.0"

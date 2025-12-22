@@ -1,6 +1,11 @@
 # AG 额度管家 (AG Quota Butler)
 
-[简体中文](#简体中文) | [English](#english) | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Hisn0w.antigravity-quota-butler)
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/hisn00w.antigravity-quota-butler?style=flat-square&label=VS%20Code&color=blue)](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
+[![Open VSX Version](https://img.shields.io/open-vsx/v/hisn00w/antigravity-quota-butler?style=flat-square&label=Open%20VSX&color=purple)](https://open-vsx.org/extension/hisn00w/antigravity-quota-butler)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/hisn00w.antigravity-quota-butler?style=flat-square&label=installs&color=brightgreen)](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
+[![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/hisn00w.antigravity-quota-butler?style=flat-square&label=rating)](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
+
+[简体中文](#简体中文) | [English](#english) | [Open VSX](https://open-vsx.org/extension/hisn00w/antigravity-quota-butler) | [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
 
 ---
 
@@ -99,12 +104,20 @@
 
 ## 安装 / Installation
 
-### 方式 A：VS Code 市场 (推荐) / Method A: VS Code Marketplace (Recommended)
+### 方式 A：Antigravity IDE 扩展商店 (推荐) / Method A: Antigravity IDE Extension Store (Recommended)
+在 **Antigravity IDE** 的扩展视图中搜索 **`AG 额度管家`** 或 **`AG Quota Butler`** 并点击安装。
+Search for **`AG 额度管家`** or **`AG Quota Butler`** in the **Antigravity IDE** Extensions view and click Install.
+
+> 💡 **提示 / Tip**: Antigravity IDE 默认使用 Open VSX Registry，可以直接搜索安装本插件。
+
+[View on Open VSX](https://open-vsx.org/extension/hisn00w/antigravity-quota-butler)
+
+### 方式 B：VS Code 市场 / Method B: VS Code Marketplace
 在 VS Code 扩展视图中搜索 **`AG 额度管家`** 或 **`AG Quota Butler`** 并点击安装。
 Search for **`AG 额度管家`** or **`AG Quota Butler`** in the VS Code Extensions view and click Install.
-[View on Marketplace](https://marketplace.visualstudio.com/items?itemName=Hisn0w.antigravity-quota-butler)
+[View on Marketplace](https://marketplace.visualstudio.com/items?itemName=hisn00w.antigravity-quota-butler)
 
-### 方式 B：手动安装 / Method B: Manual Installation
+### 方式 C：手动安装 / Method C: Manual Installation
 1. 下载最新的 `.vsix` 文件 / Download the latest `.vsix` from [Releases](https://github.com/Hisn00w/Antigravity-Quota-Butler/releases/latest)
 2. 在 VS Code 中从 VSIX 安装 / Install from VSIX in VS Code (`Extensions -> ... -> Install from VSIX`)
 3. 重启 VS Code / Restart VS Code
