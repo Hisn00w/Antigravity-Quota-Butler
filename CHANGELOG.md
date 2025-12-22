@@ -1,13 +1,42 @@
-# CHANGELOG
+# 更新日志
+
+## 1.3.0 (2025-12-22)
+
+- **新增额度历史追踪 (Usage History)**：后台自动记录模型额度变化，支持持久化存储。
+- **新增智能平替建议 (Smart Model Suggestion)**：当额度较低时，自动推荐同级别的充足模型，并提供一键提醒切换。
+- **新增可视化仪表盘 (Dashboard)**：
+  - 通过命令 `AGQ: 额度仪表盘` 开启全屏 Webview。
+  - 实时显示所有模型状态的色块进度条。
+  - 支持查看历史点位的消耗趋势。
+- **逻辑优化**：
+  - 改进了报警通知的触发逻辑。
+  - 增加了对模型种类的智能识别（Pro/Flash）。
+
+## 1.2.0 (2025-12-22)
+
+- **完整汉化支持**：
+  - 汉化了 `package.json` 中的显示名称、命令和配置说明。
+  - 汉化了状态栏 UI、菜单及其悬浮提示。
+  - 汉化了额度重置时间的显示格式（支持“X小时 X分钟”及“就绪”）。
+  - API 请求根据编辑器语言自动调整 locale（支持中文/英文切换）。
+  - 汉化了所有用户通知消息和排错指南。
+- **新增额度报警功能**：
+  - 增加 `agq.warningThreshold` 配置，可自定义报警阈值（默认 20%）。
+  - 增加 `agq.enableNotifications` 配置，支持在额度过低时发送系统通知。
+  - 智能防骚扰逻辑：同个重置周期内仅在首次跌破阈值时提醒。
+- **代码优化**：
+  - 统一配置读取前缀为 `agq`。
+  - 移除了 `package.json` 中冗余的 `activationEvents`。
+
 
 ## 1.1.0 (2025-12-20)
 
-- Add absolute date and time to quota reset information (locale-aware)
-- Add notice/mention of the source project
-- Fix macOS port detection logic by using AND semantics in `lsof`
-- Improve port validation to prevent false positives from unrelated local services
-- Add PID verification for all discovered listening ports
+- 在额度重置信息中增加绝对日期和时间（支持本地化显示）
+- 增加对原始项目的致谢/提及
+- 修复 macOS 端口检测逻辑，在 `lsof` 中使用 AND 语义
+- 改进端口验证，防止来自无关本地服务的误报
+- 为所有发现的监听端口增加 PID 验证
 
 ## 1.0.7 (2025-12-17)
 
-- Added naming scheme for Gemini 3 Flash
+- 增加了 Gemini 3 Flash 的命名方案

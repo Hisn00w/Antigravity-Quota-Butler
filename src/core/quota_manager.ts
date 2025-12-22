@@ -3,7 +3,8 @@
  */
 
 import * as https from 'https';
-import {quota_snapshot, model_quota_info, prompt_credits_info, server_user_status_response} from '../utils/types';
+import * as vscode from 'vscode';
+import { quota_snapshot, model_quota_info, prompt_credits_info, server_user_status_response } from '../utils/types';
 
 export class QuotaManager {
 	private port: number = 0;
@@ -12,8 +13,9 @@ export class QuotaManager {
 	private update_callback?: (snapshot: quota_snapshot) => void;
 	private error_callback?: (error: Error) => void;
 	private polling_timer?: NodeJS.Timeout;
+	private last_snapshot?: quota_snapshot;
 
-	constructor() {}
+	constructor() { }
 
 	init(port: number, csrf_token: string) {
 		this.port = port;
@@ -82,18 +84,23 @@ export class QuotaManager {
 		}
 	}
 
+	get_last_snapshot(): quota_snapshot | undefined {
+		return this.last_snapshot;
+	}
+
 	async fetch_quota() {
 		try {
 			const data = await this.request<server_user_status_response>('/exa.language_server_pb.LanguageServerService/GetUserStatus', {
 				metadata: {
 					ideName: 'antigravity',
 					extensionName: 'antigravity',
-					locale: 'en',
+					locale: vscode.env.language.startsWith('zh') ? 'zh' : 'en',
 				},
 			});
 
 			const snapshot = this.parse_response(data);
 
+			this.last_snapshot = snapshot;
 			if (this.update_callback) {
 				this.update_callback(snapshot);
 			}
@@ -153,14 +160,14 @@ export class QuotaManager {
 	}
 
 	private format_time(ms: number, reset_time: Date): string {
-		if (ms <= 0) return 'Ready';
+		if (ms <= 0) return '就绪';
 		const mins = Math.ceil(ms / 60000);
 		let duration = '';
 		if (mins < 60) {
-			duration = `${mins}m`;
+			duration = `${mins}分钟`;
 		} else {
 			const hours = Math.floor(mins / 60);
-			duration = `${hours}h ${mins % 60}m`;
+			duration = `${hours}小时 ${mins % 60}分钟`;
 		}
 
 		const date_str = reset_time.toLocaleDateString(undefined, {

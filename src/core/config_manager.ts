@@ -3,10 +3,10 @@
  */
 
 import * as vscode from 'vscode';
-import {config_options} from '../utils/types';
+import { config_options } from '../utils/types';
 
 export class ConfigManager {
-	private readonly config_key = 'agQuota';
+	private readonly config_key = 'ag-quota';
 
 	/**
 	 * Get full config
@@ -17,6 +17,9 @@ export class ConfigManager {
 			enabled: config.get<boolean>('enabled', true),
 			polling_interval: Math.max(30, config.get<number>('pollingInterval', 120)) * 1000,
 			show_prompt_credits: config.get<boolean>('showPromptCredits', false),
+			warning_threshold: config.get<number>('warningThreshold', 20),
+			enable_notifications: config.get<boolean>('enableNotifications', true),
+			auto_switch_models: config.get<boolean>('autoSwitchModels', false),
 		};
 	}
 

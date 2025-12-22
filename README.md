@@ -1,118 +1,121 @@
-# Antigravity Quota Watcher
+# AG 额度管家 (AG Quota Butler)
 
-A lightweight VS Code extension that monitors your Antigravity AI model usage quota and displays it in the status bar.
+[简体中文](#简体中文) | [English](#english)
 
-<img src="assets/modal.png" alt="drawing" width="500"/>
-<img src="assets/taskbar.png" alt="drawing" width="500"/>
+---
 
-## Installation (Github)
+## 简体中文
 
-1. Download the latest `.vsix` from the [Releases](https://github.com/Henrik-3/AntigravityQuota/releases/latest)
-2. In VS Code: `Extensions` → `...` → `Install from VSIX...`
-3. Restart VS Code / Antigravity
+### 功能展示
 
-## Installation (Open VSX/Antigravity)
+<img src="assets/Dashboard.png" alt="仪表盘" width="700"/>
 
-1. Open Antigravity
-2. Open the Extensions view (`Ctrl+Shift+X`)
-3. Search for "Antigravity Quota (AGQ)"
-4. Click `Install`
+*可视化仪表盘 - 一目了然掌握所有模型状态*
 
-## Features
+<img src="assets/UsageHistoryandPreferences.png" alt="使用记录和偏好设置" width="700"/>
 
-### Real-Time Quota Monitoring
+*历史趋势图表与中心化设置面板*
 
-- **Automatic detection** – Finds Antigravity's language server process, port, and auth token without manual setup
-- **Background polling** – Periodically fetches quota data to keep the status bar up-to-date
-- **Multi-model support** – Tracks quota usage for all available AI models (Gemini, Claude, GPT, etc.)
+<img src="assets/Statusbar.png" alt="状态栏窗口" width="700"/>
 
-### Status Bar Integration
+*状态栏快速菜单 - 一键切换固定模型*
 
-- Displays quota info directly in the VS Code status bar
-- Visual indicators:
-    - `$(check)` – Quota healthy (>20%)
-    - `$(warning)` – Quota low (<20%)
-    - `$(error)` – Quota exhausted
-- Click to open the interactive quota menu
 
-### Pinned Models
+### 功能特性
 
-- Pin your favorite models to the status bar for quick visibility
-- Toggle pinning from the interactive menu
-- When no models are pinned, displays "AGQ" as default
+- **实时额度监控**：自动检测 Antigravity 进程，后台定期轮询，支持多模型跟踪。
+- **状态栏集成**：直接在状态栏通过图标（$(check), $(warning), $(error)）展示额度健康状况。
+- **额度报警与智能建议**：自定义告警阈值，额度不足时自动寻找并建议同级替代模型。
+- **消耗趋势追踪**：本地持久化存储额度变化，智能差异化记录。
+- **可视化仪表盘**：精美的 Webview 面板，包含 SVG 趋势折线图和中心化设置入口。
+- **跨平台**：完全支持 Windows, macOS 和 Linux。
 
-### Interactive Quota Menu
+### 命令
 
-- View all models with progress bars and percentages
-- See time until quota reset for each model
-- View prompt credits (available/monthly)
-- Toggle model visibility directly from the menu
+| 命令 | 说明 |
+| --- | --- |
+| `AGQ: 立即刷新` | 手动刷新额度数据 |
+| `AGQ: 额度仪表盘` | 打开全屏可视化仪表盘与设置中心 |
+| `AGQ: 重新连接进程` | 强制重新扫描 Antigravity 服务进程 |
+| `AGQ: 显示调试日志` | 查看详细运行日志，用于排障 |
 
-### Cross-Platform Support
+### 配置
 
-- **Windows** – Full support using `wmic` for process detection
-- **macOS** – Unix-based detection strategy
-- **Linux** – Unix-based detection strategy
+| 设置 | 默认值 | 说明 |
+| --- | --- | --- |
+| `agq.enabled` | `true` | 启用/禁用额度监控 |
+| `agq.pollingInterval` | `120` | 轮询间隔（秒）（最小 30s） |
+| `agq.pinnedModels` | `[]` | 在状态栏固定的模型 ID |
+| `agq.warningThreshold` | `20` | 告警阈值（百分比） |
+| `agq.autoSwitchModels` | `false` | 是否开启智能切换建议 |
 
-## Commands
+---
 
-| Command            | Description                 |
-| ------------------ | --------------------------- |
-| `AGQ: Refresh Now` | Manually refresh quota data |
+## English
 
-## Configuration
+### Feature Showcase
 
-Configure via VS Code Settings (`Ctrl+,`) under **AGQ**:
+<img src="assets/Dashboard.png" alt="Dashboard" width="700"/>
 
-| Setting               | Default | Description                                 |
-| --------------------- | ------- | ------------------------------------------- |
-| `agq.enabled`         | `true`  | Enable/disable quota monitoring             |
-| `agq.pollingInterval` | `120`   | Polling interval in seconds (min: 30s)      |
-| `agq.pinnedModels`    | `[]`    | Array of model IDs to display in status bar |
+*Visual Dashboard - Monitor all model statuses at a glance*
 
-## Building from Source
+<img src="assets/UsageHistoryandPreferences.png" alt="History and Settings" width="700"/>
 
-```bash
-# Install dependencies
-npm install
+*Historical trend charts with centralized settings panel*
 
-# Compile TypeScript
-npm run compile
+<img src="assets/Statusbar.png" alt="Status Bar Menu" width="700"/>
 
-# Package VSIX
-npm run node:vsix:package
-```
+*Status bar quick menu - Toggle pinned models with one click*
 
-For Bun users:
+### Features
 
-```bash
-bun run bun:vsix:package
-```
+- **Real-time Monitoring**: Auto-detects Antigravity processes, background polling, and tracking for multiple models.
+- **Status Bar Integration**: Visual health indicators ($(check), $(warning), $(error)) at a glance.
+- **Quota Alerts & smart Suggestions**: Configurable thresholds and automatic substitute model recommendations.
+- **Usage History**: Persistent local storage of quota changes with optimized logging.
+- **Visual Dashboard**: Beautiful Webview with SVG trend charts and centralized settings.
+- **Cross-platform**: Full support for Windows, macOS, and Linux.
 
-## Development
+### Commands
 
-```bash
-# Watch mode for development
-npm run watch
+| Command | Description |
+| --- | --- |
+| `AGQ: Refresh Now` | Manually fetch the latest quota data |
+| `AGQ: Quota Dashboard` | Open the visualized dashboard and settings |
+| `AGQ: Reconnect Process` | Force rescan for Antigravity service process |
+| `AGQ: Show Debug Logs` | Open the log panel for troubleshooting |
 
-# Lint
-npm run lint
-```
+### Configuration
 
-## How It Works
+| Setting | Default | Description |
+| --- | --- | --- |
+| `agq.enabled` | `true` | Enable/disable quota monitoring |
+| `agq.pollingInterval` | `120` | Polling interval in seconds (min 30s) |
+| `agq.pinnedModels` | `[]` | Model IDs to pin in the status bar |
+| `agq.warningThreshold` | `20` | Warning threshold percentage |
+| `agq.autoSwitchModels` | `false` | Enable/disable smart model suggestions |
 
-1. **Process Detection** – Scans for Antigravity's language server process and extracts connection parameters
-2. **Port Discovery** – Tests listening ports to find the correct API endpoint
-3. **Quota Fetching** – Calls `GetUserStatus` API to retrieve model quotas and prompt credits
-4. **UI Updates** – Parses the response and updates the status bar with formatted quota info
+---
 
-## Disclaimer
+## 安装 / Installation
 
-This extension was created by me and Gemini 3 Pro between some Rainbow Six Siege Games, therefore please do not expect the highest code quality in this repo (yet).
-Some parts of the code (and especially the knowledge of how this process works) are based on the [Antigravity Quota Watcher](https://github.com/wusimpl/AntigravityQuotaWatcher) project. Feel free to check it out and leave a star on their repo if you find this useful.
+1. 下载最新的 `.vsix` 文件 / Download the latest `.vsix` from [Releases](https://github.com/Hisn00w/Antigravity-Quota-Butler/releases/latest)
+2. 在 VS Code 中从 VSIX 安装 / Install from VSIX in VS Code (`Extensions -> ... -> Install from VSIX`)
+3. 重启 VS Code / Restart VS Code
 
-This project isn't endorsed by Google and doesn't reflect the views or opinions of Google or anyone officially involved in producing or managing Google/AntiGravity properties
+## 感谢 / Credits
 
-## License
+本项目灵感源自并基于以下优秀开源项目进行深度开发与增强：
+
+1.  **[AntigravityQuotaWatcher](https://github.com/wusimpl/AntigravityQuotaWatcher)**：提供了核心的进程检测与额度获取逻辑基础。感谢其作者 [wusimpl](https://github.com/wusimpl) 的卓越贡献。
+2.  **[AntigravityQuota](https://github.com/Hisn00w/Antigravity-Quota-Butler)**：本项目的当前官方维护仓库，在此基础上增加了仪表盘、历史追踪及智能建议等特性。
+
+---
+
+Special thanks to the following open-source projects:
+
+1.  **AntigravityQuotaWatcher**: Provided the initial logic for process detection and quota retrieval. Many thanks to [wusimpl](https://github.com/wusimpl).
+2.  **AntigravityQuota**: The current home of this project, featuring the new dashboard, history tracking, and smart suggestions.
+## 许可证 / License
 
 [MIT License](LICENSE)

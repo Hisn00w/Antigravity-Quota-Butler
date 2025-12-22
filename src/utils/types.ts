@@ -40,6 +40,16 @@ export interface quota_snapshot {
 	models: model_quota_info[];
 }
 
+export interface usage_history_entry {
+	timestamp: number;
+	models: {
+		[model_id: string]: {
+			remaining_percentage: number;
+			label: string;
+		};
+	};
+}
+
 export enum quota_level {
 	Normal = 'normal',
 	Warning = 'warning',
@@ -53,6 +63,9 @@ export interface config_options {
 	enabled: boolean;
 	polling_interval: number;
 	show_prompt_credits?: boolean;
+	warning_threshold: number;
+	enable_notifications: boolean;
+	auto_switch_models: boolean;
 }
 
 // Server Response Types (Must match external API, usually camelCase or snake_case depending on proto to JSON mapping)

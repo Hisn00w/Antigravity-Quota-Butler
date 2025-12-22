@@ -3,7 +3,7 @@
  */
 
 import * as vscode from 'vscode';
-import {quota_snapshot, model_quota_info} from '../utils/types';
+import { quota_snapshot } from '../utils/types';
 
 /** Mapping of model labels to short abbreviations for status bar display */
 const MODEL_ABBREVIATIONS: Record<string, string> = {
@@ -43,7 +43,7 @@ export class StatusBarManager {
 
 	constructor() {
 		this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-		this.item.command = 'agq.show_menu';
+		this.item.command = 'ag-quota.show_menu';
 		this.item.text = '$(rocket) AGQ';
 		this.item.show();
 	}
@@ -66,16 +66,10 @@ export class StatusBarManager {
 		const pinned = this.get_pinned_models();
 		const parts: string[] = [];
 
-		/*if (show_credits && snapshot.prompt_credits) {
-			const pc = snapshot.prompt_credits;
-			const icon = pc.remaining_percentage > 20 ? '$(check)' : '$(warning)';
-			parts.push(`${icon} Credits: ${pc.available}/${pc.monthly}`);
-		}*/
-
 		// Filter models to only show pinned ones
 		const pinned_models = snapshot.models.filter(m => pinned.includes(m.model_id));
 
-		if (pinned_models.length === 0 && !show_credits) {
+		if (pinned_models.length === 0) {
 			// Show default text if nothing is pinned
 			this.item.text = '$(rocket) AGQ';
 		} else {
@@ -90,14 +84,14 @@ export class StatusBarManager {
 		}
 
 		this.item.backgroundColor = undefined;
-		this.item.tooltip = 'Click to view Antigravity Quota details';
+		this.item.tooltip = '点击查看 Antigravity 额度详情';
 		this.item.show();
 	}
 
 	show_menu() {
 		const pick = vscode.window.createQuickPick();
-		pick.title = 'Antigravity Quota';
-		pick.placeholder = 'Click a model to toggle its visibility in the status bar';
+		pick.title = 'AG 额度管家';
+		pick.placeholder = '点击模型以切换其在状态栏中的显示状态';
 		pick.matchOnDescription = false;
 		pick.matchOnDetail = false;
 		pick.canSelectMany = false;
@@ -114,8 +108,14 @@ export class StatusBarManager {
 
 		// Action the tracked item when user accepts (click/Enter)
 		pick.onDidAccept(async () => {
-			if (currentActiveItem && 'model_id' in currentActiveItem) {
-				await this.toggle_pinned_model((currentActiveItem as any).model_id);
+			if (currentActiveItem) {
+				if ('model_id' in currentActiveItem) {
+					await this.toggle_pinned_model((currentActiveItem as any).model_id);
+				} else if (currentActiveItem.label.includes('打开额度仪表盘')) {
+					vscode.commands.executeCommand('ag-quota.show_dashboard');
+					pick.hide();
+					return;
+				}
 				// Refresh the menu items to reflect the change
 				pick.items = this.build_menu_items();
 				// Update status bar immediately if we have a snapshot
@@ -134,12 +134,12 @@ export class StatusBarManager {
 	}
 
 	private get_pinned_models(): string[] {
-		const config = vscode.workspace.getConfiguration('agq');
+		const config = vscode.workspace.getConfiguration('ag-quota');
 		return config.get<string[]>('pinnedModels') || [];
 	}
 
 	private async toggle_pinned_model(model_id: string): Promise<void> {
-		const config = vscode.workspace.getConfiguration('agq');
+		const config = vscode.workspace.getConfiguration('ag-quota');
 		const pinned = [...(config.get<string[]>('pinnedModels') || [])];
 
 		const index = pinned.indexOf(model_id);
@@ -157,7 +157,13 @@ export class StatusBarManager {
 		const snapshot = this.last_snapshot;
 		const pinned = this.get_pinned_models();
 
-		items.push({label: 'Model Quotas', kind: vscode.QuickPickItemKind.Separator});
+		items.push({ label: '模型额度中心', kind: vscode.QuickPickItemKind.Separator });
+		items.push({
+			label: '$(graph) 打开额度仪表盘',
+			description: '查看详细图表与设置',
+			alwaysShow: true
+		});
+		items.push({ label: '', kind: vscode.QuickPickItemKind.Separator });
 
 		if (snapshot && snapshot.models.length > 0) {
 			for (const m of snapshot.models) {
@@ -170,10 +176,10 @@ export class StatusBarManager {
 				// Show quota status separately
 				const status_icon = m.is_exhausted ? '$(error)' : pct < 20 ? '$(warning)' : '';
 
-				const item: vscode.QuickPickItem & {model_id?: string} = {
+				const item: vscode.QuickPickItem & { model_id?: string } = {
 					label: `${selection_icon} ${status_icon ? status_icon + ' ' : ''}${m.label}`,
 					description: `${bar} ${pct.toFixed(1)}%`,
-					detail: `    Resets in: ${m.time_until_reset_formatted}`,
+					detail: `    重置时间: ${m.time_until_reset_formatted}`,
 				};
 
 				// Attach model_id for click handling
@@ -182,23 +188,10 @@ export class StatusBarManager {
 			}
 		} else {
 			items.push({
-				label: '$(info) No model data',
-				description: 'Waiting for quota info...',
+				label: '$(info) 无模型数据',
+				description: '正在等待额度信息...',
 			});
 		}
-
-		// Commented out until used (if ever)
-		/*if (snapshot?.prompt_credits) {
-			const pc = snapshot.prompt_credits;
-			const bar = this.draw_progress_bar(pc.remaining_percentage);
-
-			items.push({label: '', kind: vscode.QuickPickItemKind.Separator});
-			items.push({label: 'Prompt Credits (Not activly used)', kind: vscode.QuickPickItemKind.Separator});
-			items.push({
-				label: `$(credit-card) ${pc.available.toLocaleString()} / ${pc.monthly.toLocaleString()}`,
-				description: `${bar} ${pc.remaining_percentage.toFixed(1)}%`,
-			});
-		}*/
 
 		return items;
 	}

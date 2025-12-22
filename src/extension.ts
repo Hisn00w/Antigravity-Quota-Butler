@@ -3,17 +3,23 @@
  */
 
 import * as vscode from 'vscode';
-import {ConfigManager} from './core/config_manager';
-import {ProcessFinder} from './core/process_finder';
-import {QuotaManager} from './core/quota_manager';
-import {StatusBarManager} from './ui/status_bar';
-import {logger} from './utils/logger';
+import { ConfigManager } from './core/config_manager';
+import { ProcessFinder } from './core/process_finder';
+import { QuotaManager } from './core/quota_manager';
+import { StatusBarManager } from './ui/status_bar';
+import { HistoryManager } from './core/history_manager';
+import { DashboardManager } from './ui/dashboard';
+import { quota_snapshot } from './utils/types';
+import { logger } from './utils/logger';
 
 let config_manager: ConfigManager;
 let process_finder: ProcessFinder;
 let quota_manager: QuotaManager;
 let status_bar: StatusBarManager;
+let history_manager: HistoryManager;
+let dashboard_manager: DashboardManager;
 let is_initialized = false;
+const warned_models = new Set<string>();
 
 export async function activate(context: vscode.ExtensionContext) {
 	logger.init(context);
@@ -25,23 +31,47 @@ export async function activate(context: vscode.ExtensionContext) {
 	process_finder = new ProcessFinder();
 	quota_manager = new QuotaManager();
 	status_bar = new StatusBarManager();
+	history_manager = new HistoryManager(context);
+	dashboard_manager = new DashboardManager(history_manager);
 
 	context.subscriptions.push(status_bar);
+
+	// Show update/install notification
+	const currentVersion = context.extension.packageJSON.version;
+	const lastVersion = context.globalState.get('lastVersion');
+	if (lastVersion !== currentVersion) {
+		vscode.window.showInformationMessage(`AG 额度管家已升级至 v${currentVersion}！如遇到功能异常，请尝试重新启动 VS Code 以确保环境完全加载。`, '查看更新日志').then(selection => {
+			if (selection === '查看更新日志') {
+				vscode.commands.executeCommand('markdown.showPreview', vscode.Uri.file(context.asAbsolutePath('CHANGELOG.md')));
+			}
+		});
+		context.globalState.update('lastVersion', currentVersion);
+	}
 
 	const config = config_manager.get_config();
 	logger.debug('Extension', 'Initial config:', config);
 
 	// Register Commands
 	context.subscriptions.push(
-		vscode.commands.registerCommand('agq.refresh', () => {
+		vscode.commands.registerCommand('ag-quota.refresh', () => {
 			logger.info('Extension', 'Manual refresh triggered');
-			vscode.window.showInformationMessage('Refreshing Quota...');
+			vscode.window.showInformationMessage('正在刷新额度...');
 			quota_manager.fetch_quota();
 		})
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('agq.show_menu', () => {
+		vscode.commands.registerCommand('ag-quota.show_dashboard', () => {
+			if (quota_manager.get_last_snapshot()) {
+				dashboard_manager.open(quota_manager.get_last_snapshot()!);
+			} else {
+				vscode.window.showInformationMessage('尚未获取到额度信息，请稍后再试。');
+			}
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('ag-quota.show_menu', () => {
 			logger.debug('Extension', 'Show menu triggered');
 			status_bar.show_menu();
 		})
@@ -49,20 +79,20 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Manual activation command
 	context.subscriptions.push(
-		vscode.commands.registerCommand('agq.activate', async () => {
+		vscode.commands.registerCommand('ag-quota.activate', async () => {
 			logger.info('Extension', 'Manual activation triggered');
 			if (!is_initialized) {
 				await initialize_extension();
 			} else {
-				vscode.window.showInformationMessage('AGQ is already active');
+				vscode.window.showInformationMessage('AGQ 已处于激活状态');
 			}
 		})
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('agq.reconnect', async () => {
+		vscode.commands.registerCommand('ag-quota.reconnect', async () => {
 			logger.info('Extension', 'Reconnect triggered');
-			vscode.window.showInformationMessage('Reconnecting to Antigravity process...');
+			vscode.window.showInformationMessage('正在重新连接 Antigravity 进程...');
 			is_initialized = false;
 			quota_manager.stop_polling();
 			status_bar.show_loading();
@@ -71,16 +101,51 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('agq.show_logs', () => {
+		vscode.commands.registerCommand('ag-quota.show_logs', () => {
 			logger.info('Extension', 'Opening debug log panel');
 			logger.show();
-			vscode.window.showInformationMessage('Debug log panel opened');
+			vscode.window.showInformationMessage('调试日志面板已打开');
 		})
 	);
 
 	// Setup Quota Manager Callbacks
 	quota_manager.on_update(snapshot => {
 		const current_config = config_manager.get_config();
+
+		// Check for quota warnings
+		if (current_config.enable_notifications) {
+			for (const m of snapshot.models) {
+				const pct = m.remaining_percentage ?? 100;
+				if (pct < current_config.warning_threshold) {
+					if (!warned_models.has(m.model_id)) {
+						const alternative = suggest_alternative_model(snapshot, m.model_id);
+						const msg = `额度报警: 模型 ${m.label} 剩余额度仅剩 ${pct.toFixed(1)}%！`;
+						const action = alternative ? `尝试使用 ${alternative.label}` : undefined;
+
+						if (alternative) {
+							const alt_label = alternative.label;
+							const action = `尝试使用 ${alt_label}`;
+							vscode.window.showWarningMessage(msg, action).then(selected => {
+								if (selected === action) {
+									vscode.window.showInformationMessage(`请在 Antigravity 模型选择菜单中手动切换至 ${alt_label}`);
+								}
+							});
+						} else {
+							vscode.window.showWarningMessage(msg);
+						}
+						warned_models.add(m.model_id);
+					}
+				} else {
+					// Reset warning if quota is above threshold (e.g. reset)
+					warned_models.delete(m.model_id);
+				}
+			}
+		}
+
+		// Log to history and update dashboard
+		history_manager.log_snapshot(snapshot);
+		dashboard_manager.update(snapshot);
+
 		logger.debug('Extension', 'Quota update received:', {
 			models_count: snapshot.models?.length ?? 0,
 			prompt_credits: snapshot.prompt_credits,
@@ -150,14 +215,14 @@ async function initialize_extension() {
 		} else {
 			logger.error('Extension', 'Antigravity process not found');
 			logger.info('Extension', 'Troubleshooting tips:');
-			logger.info('Extension', '   1. Make sure Antigravity extension is installed and enabled');
-			logger.info('Extension', '   2. Check if the language_server process is running');
-			logger.info('Extension', '   3. Try reloading VS Code');
-			logger.info('Extension', '   4. Open "Output" panel and select "Antigravity Quota" for detailed logs');
+			logger.info('Extension', '   1. 确保 Antigravity 扩展已安装并启用');
+			logger.info('Extension', '   2. 检查 language_server 进程是否正在运行');
+			logger.info('Extension', '   3. 尝试重启 VS Code');
+			logger.info('Extension', '   4. 打开“输出”面板并选择“Antigravity Quota”查看详细日志');
 
-			status_bar.show_error('Antigravity process not found');
-			vscode.window.showErrorMessage('Could not find Antigravity process. Is it running? Use "AGQ: Show Debug Log" to see details.', 'Show Logs').then(action => {
-				if (action === 'Show Logs') {
+			status_bar.show_error('未发现 Antigravity 进程');
+			vscode.window.showErrorMessage('找不到 Antigravity 进程。它是否正在运行？请查看“显示调试日志”了解更多详情。', '查看日志').then(action => {
+				if (action === '查看日志') {
 					logger.show();
 				}
 			});
@@ -167,7 +232,7 @@ async function initialize_extension() {
 			message: e.message,
 			stack: e.stack,
 		});
-		status_bar.show_error('Detection failed');
+		status_bar.show_error('检测失败');
 	}
 
 	timer();
@@ -177,4 +242,37 @@ export function deactivate() {
 	logger.info('Extension', 'Extension deactivating');
 	quota_manager?.stop_polling();
 	status_bar?.dispose();
+}
+
+/**
+ * Suggest an alternative model when one is low
+ */
+function suggest_alternative_model(snapshot: quota_snapshot, low_model_id: string) {
+	const threshold = 50; // We suggest models with > 50% quota
+
+	// Helper to categorize models
+	const is_pro = (label: string) => label.toLowerCase().includes('pro') || label.toLowerCase().includes('opus') || label.toLowerCase().includes('sonnet 4.5');
+	const is_flash = (label: string) => label.toLowerCase().includes('flash') || label.toLowerCase().includes('sonnet 3.5');
+
+	const low_model = snapshot.models.find(m => m.model_id === low_model_id);
+	if (!low_model) return null;
+
+	const category_match = (m: any) => {
+		if (is_pro(low_model.label)) return is_pro(m.label);
+		if (is_flash(low_model.label)) return is_flash(m.label);
+		return true;
+	};
+
+	// Find models in same category with enough quota
+	const candidates = snapshot.models.filter(m =>
+		m.model_id !== low_model_id &&
+		!m.is_exhausted &&
+		(m.remaining_percentage ?? 0) > threshold &&
+		category_match(m)
+	);
+
+	// Sort by remaining percentage descending
+	candidates.sort((a, b) => (b.remaining_percentage ?? 0) - (a.remaining_percentage ?? 0));
+
+	return candidates.length > 0 ? candidates[0] : null;
 }
