@@ -11,6 +11,18 @@
 
 ## 简体中文
 
+### 快速开始
+
+**状态栏使用说明**：
+
+<img src="assets/Quota.png" alt="默认状态栏显示" width="300"/>
+
+*默认状态 - 未选择模型时，右下角状态栏显示 "Quota"*
+
+<img src="assets/Model.png" alt="选择模型后状态栏显示" width="500"/>
+
+*选择模型后 - 点击 Quota 选择模型后，状态栏会显示相应的模型名称及额度*
+
 ### 功能展示
 
 <img src="assets/Dashboard.png" alt="仪表盘" width="700"/>
@@ -62,6 +74,18 @@
 
 ## English
 
+### Quick Start
+
+**Status Bar Usage**:
+
+<img src="assets/Quota.png" alt="Default Status Bar" width="300"/>
+
+*Default State - When no model is selected, the status bar shows "Quota"*
+
+<img src="assets/Model.png" alt="Status Bar with Model" width="500"/>
+
+*After Selection - Click Quota to select a model, then the status bar displays the model name and quota*
+
 ### Feature Showcase
 
 <img src="assets/Dashboard.png" alt="Dashboard" width="700"/>
@@ -112,6 +136,18 @@
 
 ## 日本語
 
+### クイックスタート
+
+**ステータスバーの使い方**：
+
+<img src="assets/Quota.png" alt="デフォルトのステータスバー" width="300"/>
+
+*デフォルト状態 - モデルが選択されていない場合、ステータスバーに "Quota" が表示されます*
+
+<img src="assets/Model.png" alt="モデル選択後のステータスバー" width="500"/>
+
+*選択後 - Quota をクリックしてモデルを選択すると、ステータスバーにモデル名とクォータが表示されます*
+
 ### 特徴
 - **リアルタイム監視**: Antigravityプロセスを自動検出し、バックグラウンドでポーリングを行い、複数のモデルを追跡します。
 - **ステータスバー統合**: ステータスバーのアイコン（$(check), $(warning), $(error)）で、クォータの状態を一目で確認できます。
@@ -130,6 +166,18 @@
 
 ## Français
 
+### Démarrage rapide
+
+**Utilisation de la barre d'état** :
+
+<img src="assets/Quota.png" alt="Barre d'état par défaut" width="300"/>
+
+*État par défaut - Lorsqu'aucun modèle n'est sélectionné, la barre d'état affiche "Quota"*
+
+<img src="assets/Model.png" alt="Barre d'état avec modèle" width="500"/>
+
+*Après sélection - Cliquez sur Quota pour sélectionner un modèle, puis la barre d'état affiche le nom du modèle et le quota*
+
 ### Caractéristiques
 - **Surveillance en temps réel**: Détection automatique des processus Antigravity, scrutation en arrière-plan et suivi de plusieurs modèles.
 - **Intégration de la barre d'état**: Indicateurs visuels ($(check), $(warning), $(error)) pour un aperçu rapide de l'état des quotas.
@@ -147,6 +195,18 @@
 ---
 
 ## Deutsch
+
+### Schnellstart
+
+**Verwendung der Statusleiste**:
+
+<img src="assets/Quota.png" alt="Standard-Statusleiste" width="300"/>
+
+*Standardzustand - Wenn kein Modell ausgewählt ist, zeigt die Statusleiste "Quota" an*
+
+<img src="assets/Model.png" alt="Statusleiste mit Modell" width="500"/>
+
+*Nach Auswahl - Klicken Sie auf Quota, um ein Modell auszuwählen, dann zeigt die Statusleiste den Modellnamen und das Kontingent an*
 
 ### Funktionen
 - **Echtzeit-Überwachung**: Automatische Erkennung von Antigravity-Prozessen, Hintergrundabfrage und Verfolgung mehrerer Modelle.

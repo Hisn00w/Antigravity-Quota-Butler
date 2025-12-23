@@ -44,17 +44,17 @@ export class StatusBarManager {
 	constructor() {
 		this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 		this.item.command = 'ag-quota.show_menu';
-		this.item.text = '$(rocket) AGQ';
+		this.item.text = '$(rocket) Quota';
 		this.item.show();
 	}
 
 	show_loading() {
-		this.item.text = '$(sync~spin) AGQ';
+		this.item.text = '$(sync~spin) Quota';
 		this.item.show();
 	}
 
 	show_error(msg: string) {
-		this.item.text = '$(error) AGQ';
+		this.item.text = '$(error) Quota';
 		this.item.tooltip = msg;
 		this.item.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
 		this.item.show();
@@ -71,7 +71,7 @@ export class StatusBarManager {
 
 		if (models_to_show.length === 0) {
 			// Show default text if nothing is pinned
-			this.item.text = '$(rocket) AGQ';
+			this.item.text = '$(rocket) Quota';
 		} else {
 			for (const m of models_to_show) {
 				const pct = m.remaining_percentage !== undefined ? `${m.remaining_percentage.toFixed(0)}%` : 'N/A';
@@ -81,7 +81,7 @@ export class StatusBarManager {
 				parts.push(`${status_icon} ${abbrev}: ${pct}`);
 			}
 
-			this.item.text = parts.length > 0 ? parts.join('  ') : '$(rocket) AGQ';
+			this.item.text = parts.length > 0 ? parts.join('  ') : '$(rocket) Quota';
 		}
 
 		this.item.backgroundColor = undefined;
