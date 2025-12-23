@@ -21,6 +21,8 @@ let history_manager: HistoryManager;
 let dashboard_manager: DashboardManager;
 let is_initialized = false;
 const warned_models = new Set<string>();
+// Track previous quota percentages to detect resets
+const previous_quotas = new Map<string, number>();
 
 export async function activate(context: vscode.ExtensionContext) {
 	logger.init(context);
@@ -141,6 +143,27 @@ export async function activate(context: vscode.ExtensionContext) {
 					// Reset warning if quota is above threshold (e.g. reset)
 					warned_models.delete(m.model_id);
 				}
+			}
+		}
+
+		// Check for quota reset notifications
+		if (current_config.enable_reset_notification) {
+			const RESET_THRESHOLD = 90; // Consider quota reset if it jumps to >= 90%
+			const lang = current_config.language === 'auto' ? vscode.env.language : current_config.language;
+
+			for (const m of snapshot.models) {
+				const pct = m.remaining_percentage ?? 0;
+				const prev_pct = previous_quotas.get(m.model_id);
+
+				// Detect reset: previous was below 90% and now is >= 90%
+				if (prev_pct !== undefined && prev_pct < RESET_THRESHOLD && pct >= RESET_THRESHOLD) {
+					const msg = getTranslation(lang, 'quotaReset', m.label, pct.toFixed(1));
+					vscode.window.showInformationMessage(msg);
+					logger.info('Extension', `Quota reset detected for ${m.label}: ${prev_pct.toFixed(1)}% -> ${pct.toFixed(1)}%`);
+				}
+
+				// Update previous quota
+				previous_quotas.set(m.model_id, pct);
 			}
 		}
 

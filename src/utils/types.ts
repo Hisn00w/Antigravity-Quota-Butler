@@ -68,6 +68,7 @@ export interface config_options {
 	warning_threshold: number;
 	enable_notifications: boolean;
 	auto_switch_models: boolean;
+	enable_reset_notification: boolean;
 	language: string;
 }
 

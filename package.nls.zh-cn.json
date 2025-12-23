@@ -1,6 +1,6 @@
 {
     "ext.displayName": "AG 额度管家 (AG Quota Butler)",
-    "ext.description": "实时监控 Antigravity AI 模型使用额度，集成状态栏、消耗趋势图表及智能平替建议。",
+    "ext.description": "实时监控 Antigravity AI 模型使用额度，集成状态栏、消耗趋势图表、智能平替建议及额度重置提醒。",
     "cmd.refresh": "AGQ: 立即刷新",
     "cmd.reconnect": "AGQ: 重新连接",
     "cmd.logs": "AGQ: 显示调试日志",
@@ -13,5 +13,6 @@
     "config.threshold": "额度报警阈值（百分比）。当剩余额度低于此值时将触发告警。",
     "config.notify": "当额度低于阈值时发送桌面通知提醒。",
     "config.autoSwitch": "当额度较低时，是否允许插件协助建议切换模型。",
+    "config.resetNotify": "当模型额度重置完成时发送通知提醒。",
     "config.language": "仪表盘和通知的显示语言。选择 'auto' 将跟随 IDE 语言。"
 }

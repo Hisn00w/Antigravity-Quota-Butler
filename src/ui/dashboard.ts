@@ -13,6 +13,8 @@ const DASHBOARD_I18N: Record<string, any> = {
         thresholdDesc: '当模型剩余百分比低于此值时发送警告。',
         autoSwitchLabel: '智能平替建议',
         autoSwitchDesc: '额度不足时自动寻找并建议最佳替代模型。建议与通知功能配合使用。',
+        resetNotifyLabel: '额度重置提醒',
+        resetNotifyDesc: '当模型额度重置完成时发送通知。',
         languageLabel: '界面语言',
         languageDesc: '选择仪表盘和通知的显示语言。',
         saveIndicator: '所有更改将实时保存至您的扩展配置',
@@ -29,6 +31,8 @@ const DASHBOARD_I18N: Record<string, any> = {
         thresholdDesc: 'Send an alert when the remaining percentage falls below this value.',
         autoSwitchLabel: 'Smart Model Suggestion',
         autoSwitchDesc: 'Automatically suggest alternatives when quota is low.',
+        resetNotifyLabel: 'Reset Notification',
+        resetNotifyDesc: 'Send a notification when a model\'s quota has been reset.',
         languageLabel: 'Language',
         languageDesc: 'Select the language for the dashboard and notifications.',
         saveIndicator: 'Changes are saved in real-time to your extension config.',
@@ -45,6 +49,8 @@ const DASHBOARD_I18N: Record<string, any> = {
         thresholdDesc: '残りの割合がこの値を下回ったときにアラートを送信します。',
         autoSwitchLabel: 'スマートモデル提案',
         autoSwitchDesc: 'クォータが不足しているときに代替案を自動的に提案します。',
+        resetNotifyLabel: 'リセット通知',
+        resetNotifyDesc: 'モデルのクォータがリセットされたときに通知を送信します。',
         languageLabel: '言語',
         languageDesc: 'ダッシュボードと通知の言語を選択します。',
         saveIndicator: '変更はリアルタイムで拡張機能の構成に保存されます。',
@@ -61,6 +67,8 @@ const DASHBOARD_I18N: Record<string, any> = {
         thresholdDesc: 'Envoyer une alerte lorsque le pourcentage restant tombe en dessous de cette valeur.',
         autoSwitchLabel: 'Suggestion de modèle intelligent',
         autoSwitchDesc: 'Suggérer automatiquement des alternatives lorsque le quota est faible.',
+        resetNotifyLabel: 'Notification de réinitialisation',
+        resetNotifyDesc: 'Envoyer une notification lorsque le quota d\'un modèle a été réinitialisé.',
         languageLabel: 'Langue',
         languageDesc: 'Sélectionnez la langue du tableau de bord et des notifications.',
         saveIndicator: 'Les modifications sont enregistrées en temps réel.',
@@ -77,6 +85,8 @@ const DASHBOARD_I18N: Record<string, any> = {
         thresholdDesc: 'Alarm senden, wenn der verbleibende Prozentsatz unter diesen Wert fällt.',
         autoSwitchLabel: 'Intelligente Modellvorschläge',
         autoSwitchDesc: 'Automatisch Alternativen vorschlagen, wenn das Kontingent niedrig ist.',
+        resetNotifyLabel: 'Rücksetz-Benachrichtigung',
+        resetNotifyDesc: 'Benachrichtigung senden, wenn das Kontingent eines Modells zurückgesetzt wurde.',
         languageLabel: 'Sprache',
         languageDesc: 'Wählen Sie die Sprache für das Dashboard und die Benachrichtigungen aus.',
         saveIndicator: 'Änderungen werden in Echtzeit in Ihrer Konfiguration gespeichert.',
@@ -169,6 +179,7 @@ export class DashboardManager {
         const config = vscode.workspace.getConfiguration('ag-quota');
         const currentThreshold = config.get('warningThreshold', 20);
         const autoSwitch = config.get('autoSwitchModels', false);
+        const enableResetNotify = config.get('enableResetNotification', false);
         const langPreference = config.get<string>('language', 'auto') || 'auto';
 
         const i18n = this.get_translation(langPreference);
@@ -545,6 +556,18 @@ export class DashboardManager {
                 <div class="setting-card-inner">
                     <div class="setting-item">
                         <div class="setting-label">
+                            <span>${i18n.resetNotifyLabel}</span>
+                            <label class="switch">
+                                <input type="checkbox" id="resetnotify-check" ${enableResetNotify ? 'checked' : ''}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="description">${i18n.resetNotifyDesc}</div>
+                    </div>
+                </div>
+                <div class="setting-card-inner">
+                    <div class="setting-item">
+                        <div class="setting-label">
                             <span>${i18n.languageLabel}</span>
                         </div>
                         <div class="language-selector">
@@ -596,6 +619,15 @@ export class DashboardManager {
             vscode.postMessage({
                 type: 'updateSetting',
                 key: 'autoSwitchModels',
+                value: e.target.checked
+            });
+        });
+
+        const resetNotifyCheck = document.getElementById('resetnotify-check');
+        resetNotifyCheck.addEventListener('change', (e) => {
+            vscode.postMessage({
+                type: 'updateSetting',
+                key: 'enableResetNotification',
                 value: e.target.checked
             });
         });

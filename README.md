@@ -31,6 +31,7 @@
 - **实时额度监控**：自动检测 Antigravity 进程，后台定期轮询，支持多模型跟踪。
 - **状态栏集成**：直接在状态栏通过图标（$(check), $(warning), $(error)）展示额度健康状况。
 - **额度报警与智能建议**：自定义告警阈值，额度不足时自动寻找并建议同级替代模型。
+- **额度重置提醒**：当模型额度重置完成时自动发送通知，帮助您及时了解额度恢复情况。
 - **消耗趋势追踪**：本地持久化存储额度变化，智能差异化记录。
 - **可视化仪表盘**：精美的 Webview 面板，包含 SVG 趋势折线图和中心化设置入口。
 - **跨平台**：完全支持 Windows, macOS 和 Linux。
@@ -52,7 +53,10 @@
 | `agq.pollingInterval` | `120` | 轮询间隔（秒）（最小 30s） |
 | `agq.pinnedModels` | `[]` | 在状态栏固定的模型 ID |
 | `agq.warningThreshold` | `20` | 告警阈值（百分比） |
+| `agq.enableNotifications` | `true` | 启用额度低于阈值时的桌面通知 |
 | `agq.autoSwitchModels` | `false` | 是否开启智能切换建议 |
+| `agq.enableResetNotification` | `false` | 启用额度重置完成时的通知提醒 |
+| `agq.language` | `auto` | 界面语言（auto/zh-cn/en/ja/fr/de） |
 
 ---
 
@@ -76,7 +80,8 @@
 
 - **Real-time Monitoring**: Auto-detects Antigravity processes, background polling, and tracking for multiple models.
 - **Status Bar Integration**: Visual health indicators ($(check), $(warning), $(error)) at a glance.
-- **Quota Alerts & smart Suggestions**: Configurable thresholds and automatic substitute model recommendations.
+- **Quota Alerts & Smart Suggestions**: Configurable thresholds and automatic substitute model recommendations.
+- **Reset Notifications**: Automatic notifications when model quotas are reset, keeping you informed of quota recovery.
 - **Usage History**: Persistent local storage of quota changes with optimized logging.
 - **Visual Dashboard**: Beautiful Webview with SVG trend charts and centralized settings.
 - **Cross-platform**: Full support for Windows, macOS, and Linux.
@@ -98,7 +103,9 @@
 | `agq.pollingInterval` | `120` | Polling interval in seconds (min 30s) |
 | `agq.pinnedModels` | `[]` | Model IDs to pin in the status bar |
 | `agq.warningThreshold` | `20` | Warning threshold percentage |
+| `agq.enableNotifications` | `true` | Enable desktop notifications when quota is low |
 | `agq.autoSwitchModels` | `false` | Enable/disable smart model suggestions |
+| `agq.enableResetNotification` | `false` | Enable notifications when quotas are reset |
 | `agq.language` | `auto` | Language preference (auto/en/zh-cn/ja/fr/de) |
 
 ---
@@ -109,6 +116,7 @@
 - **リアルタイム監視**: Antigravityプロセスを自動検出し、バックグラウンドでポーリングを行い、複数のモデルを追跡します。
 - **ステータスバー統合**: ステータスバーのアイコン（$(check), $(warning), $(error)）で、クォータの状態を一目で確認できます。
 - **クォータアラートとスマートな提案**: しきい値を設定可能で、クォータが不足した際に代替モデルを自動的に推奨します。
+- **リセット通知**: モデルのクォータがリセットされたときに自動的に通知し、クォータの回復状況を把握できます。
 - **使用履歴**: クォータの変動をローカルに保存し、最適化されたログを保持します。
 - **ビジュアルダッシュボード**: SVGトレンドチャートと設定機能を集約した美しいWebviewパネル。
 
@@ -126,6 +134,7 @@
 - **Surveillance en temps réel**: Détection automatique des processus Antigravity, scrutation en arrière-plan et suivi de plusieurs modèles.
 - **Intégration de la barre d'état**: Indicateurs visuels ($(check), $(warning), $(error)) pour un aperçu rapide de l'état des quotas.
 - **Alertes et suggestions intelligentes**: Seuils configurables et recommandations automatiques de modèles de remplacement.
+- **Notifications de réinitialisation**: Notifications automatiques lorsque les quotas des modèles sont réinitialisés, vous tenant informé de la récupération des quotas.
 - **Historique d'utilisation**: Stockage local persistant des variations de quotas.
 - **Tableau de bord visuel**: Superbe panneau Webview avec graphiques de tendance SVG.
 
@@ -143,6 +152,7 @@
 - **Echtzeit-Überwachung**: Automatische Erkennung von Antigravity-Prozessen, Hintergrundabfrage und Verfolgung mehrerer Modelle.
 - **Statusleisten-Integration**: Visuelle Gesundheitsindikatoren ($(check), $(warning), $(error)) auf einen Blick.
 - **Quoten-Warnungen & intelligente Vorschläge**: Konfigurierbare Schwellenwerte und automatische Empfehlungen für Ersatzmodelle.
+- **Rücksetz-Benachrichtigungen**: Automatische Benachrichtigungen, wenn Modellkontingente zurückgesetzt werden, damit Sie über die Kontingenterholung informiert bleiben.
 - **Nutzungsverlauf**: Persistente lokale Speicherung von Quotenänderungen.
 - **Visuelles Dashboard**: Schönes Webview-Panel mit SVG-Trenddiagrammen und zentralisierten Einstellungen.
 

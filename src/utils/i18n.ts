@@ -1,6 +1,7 @@
 export const EXT_I18N: Record<string, any> = {
     'zh-cn': {
         quotaWarning: '额度报警: 模型 {0} 剩余额度仅剩 {1}%！',
+        quotaReset: '🎉 额度已重置: 模型 {0} 已恢复到 {1}%！',
         tryAlternative: '尝试使用 {0}',
         switchManually: '请在 Antigravity 模型选择菜单中手动切换至 {0}',
         pinedDefault: 'AGQ',
@@ -8,6 +9,7 @@ export const EXT_I18N: Record<string, any> = {
     },
     'en': {
         quotaWarning: 'Quota Warning: Model {0} has only {1}% remaining!',
+        quotaReset: '🎉 Quota Reset: Model {0} is now at {1}%!',
         tryAlternative: 'Try using {0}',
         switchManually: 'Please manually switch to {0} in the Antigravity model menu',
         pinedDefault: 'AGQ',
@@ -15,6 +17,7 @@ export const EXT_I18N: Record<string, any> = {
     },
     'ja': {
         quotaWarning: 'クォータ警告: モデル {0} の残量はわずか {1}% です！',
+        quotaReset: '🎉 クォータリセット: モデル {0} が {1}% に回復しました！',
         tryAlternative: '{0} を試す',
         switchManually: 'Antigravity モデルメニューで手動で {0} に切り替えてください',
         pinedDefault: 'AGQ',
@@ -22,6 +25,7 @@ export const EXT_I18N: Record<string, any> = {
     },
     'fr': {
         quotaWarning: 'Alerte Quota : Modèle {0} n\'a plus que {1}% restant !',
+        quotaReset: '🎉 Quota réinitialisé : Modèle {0} est maintenant à {1}% !',
         tryAlternative: 'Essayer {0}',
         switchManually: 'Veuillez passer manuellement à {0} dans le menu du modèle Antigravity',
         pinedDefault: 'AGQ',
@@ -29,6 +33,7 @@ export const EXT_I18N: Record<string, any> = {
     },
     'de': {
         quotaWarning: 'Kontingent-Warnung: Modell {0} hat nur noch {1}% übrig!',
+        quotaReset: '🎉 Kontingent zurückgesetzt: Modell {0} ist jetzt bei {1}%!',
         tryAlternative: 'Versuchen Sie {0}',
         switchManually: 'Bitte wechseln Sie manuell zu {0} im Antigravity-Modellmenü',
         pinedDefault: 'AGQ',

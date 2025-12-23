@@ -1,6 +1,6 @@
 {
     "ext.displayName": "AG Quota Butler (AG 額度マネージャー)",
-    "ext.description": "Antigravity AI モデルの使用クレジットをリアルタイムで監視し、ステータスバーの概要、トレンドチャート、およびスマートなモデル提案機能を備えています。",
+    "ext.description": "Antigravity AI モデルの使用クレジットをリアルタイムで監視し、ステータスバーの概要、トレンドチャート、スマートなモデル提案機能、およびリセット通知を備えています。",
     "cmd.refresh": "AGQ: 今すぐ更新",
     "cmd.reconnect": "AGQ: プロセスを再接続",
     "cmd.logs": "AGQ: デバッグログを表示",
@@ -13,5 +13,6 @@
     "config.threshold": "警告しきい値（パーセンテージ）。残りのクォータがこの値を下回るとアラートをトリガーします。",
     "config.notify": "クォータがしきい値を下回ったときにデスクトップ通知を送信する。",
     "config.autoSwitch": "クォータが不足しているときに、最適な代替モデルを自動的に提案または検索します。",
+    "config.resetNotify": "モデルのクォータがリセットされたときに通知を送信します。",
     "config.language": "ダッシュボードと通知の言語。'auto' を選択するとIDEの言語に従います。"
 }
