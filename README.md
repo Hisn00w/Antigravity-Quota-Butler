@@ -167,7 +167,7 @@
 ## Français
 
 ### Démarrage rapide
-
+ 
 **Utilisation de la barre d'état** :
 
 <img src="assets/Quota.png" alt="Barre d'état par défaut" width="700"/>
@@ -257,6 +257,10 @@ Special thanks to the following open-source projects:
 
 1.  **AntigravityQuotaWatcher**: Provided the initial logic for process detection and quota retrieval. Many thanks to [wusimpl](https://github.com/wusimpl).
 2.  **AntigravityQuota**: The current home of this project, featuring the new dashboard, history tracking, and smart suggestions.
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Hisn00w/Antigravity-Quota-Butler&type=Date)](https://star-history.com/#Hisn00w/Antigravity-Quota-Butler&Date)
+
 ## 许可证 / License
 
 [MIT License](LICENSE)
